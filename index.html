@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080a13" />
+  <meta name="description" content="Suisungo 软件发布中心：SteamCommunity 游戏加速器与 PictureGo 图片转换器。" />
+  <title>Suisungo · 软件发布中心</title>
+  <style>
+    :root {
+      --bg: #080a13;
+      --panel: rgba(255, 255, 255, .085);
+      --panel-strong: rgba(255, 255, 255, .13);
+      --stroke: rgba(255, 255, 255, .15);
+      --text: #f6f7fb;
+      --muted: #9da5ba;
+      --cyan: #6de7ff;
+      --violet: #9d8cff;
+      --pink: #f59bff;
+      --shadow: 0 26px 90px rgba(0, 0, 0, .42);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--text);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: -2;
+      width: 48vw;
+      height: 48vw;
+      min-width: 420px;
+      min-height: 420px;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: .34;
+      pointer-events: none;
+    }
+    body::before { left: -18vw; top: -16vw; background: #4c3bdb; animation: drift 15s ease-in-out infinite alternate; }
+    body::after { right: -19vw; top: 20vw; background: #057eae; animation: drift 18s ease-in-out infinite alternate-reverse; }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .045;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+    }
+
+    .shell { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 26px 0; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--text); text-decoration: none; font-weight: 700; letter-spacing: -.02em; }
+    .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--stroke); border-radius: 13px; background: linear-gradient(135deg, rgba(109,231,255,.8), rgba(157,140,255,.85)); box-shadow: 0 8px 30px rgba(75,144,255,.3); }
+    .brand-mark svg { width: 22px; }
+    nav { display: flex; align-items: center; gap: 8px; }
+    nav a { color: var(--muted); text-decoration: none; padding: 9px 13px; border-radius: 999px; font-size: 13px; transition: .25s ease; }
+    nav a:hover { color: var(--text); background: var(--panel); }
+
+    .hero { position: relative; padding: 105px 0 82px; text-align: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--stroke); border-radius: 999px; color: #cfd5e8; background: rgba(255,255,255,.055); font-size: 12px; letter-spacing: .08em; }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: #72f6ad; box-shadow: 0 0 0 5px rgba(114,246,173,.12), 0 0 16px rgba(114,246,173,.8); }
+    h1 { max-width: 820px; margin: 25px auto 19px; font-size: clamp(44px, 7vw, 82px); line-height: .99; letter-spacing: -.075em; font-weight: 700; }
+    h1 span { background: linear-gradient(100deg, #fff 8%, var(--cyan) 50%, var(--pink) 95%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p { max-width: 620px; margin: 0 auto; color: var(--muted); line-height: 1.8; font-size: 16px; }
+    .hero-actions { display: flex; justify-content: center; gap: 12px; margin-top: 30px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: 1px solid transparent; border-radius: 13px; padding: 13px 18px; color: var(--text); text-decoration: none; font-size: 14px; font-weight: 650; cursor: pointer; transition: transform .25s ease, box-shadow .25s ease, background .25s ease; }
+    .button:hover { transform: translateY(-3px); }
+    .button-primary { background: linear-gradient(135deg, #75e8ff, #8e82ff); color: #09101e; box-shadow: 0 14px 34px rgba(91, 171, 255, .27); }
+    .button-secondary { border-color: var(--stroke); background: rgba(255,255,255,.065); }
+    .button svg { width: 17px; height: 17px; }
+
+    .section-label { display: flex; justify-content: space-between; align-items: end; margin: 25px 0 18px; }
+    .section-label h2 { margin: 0; font-size: 24px; letter-spacing: -.04em; }
+    .section-label p { margin: 0; color: var(--muted); font-size: 13px; }
+    .products { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .card { position: relative; min-height: 400px; padding: 27px; overflow: hidden; border: 1px solid var(--stroke); border-radius: 25px; background: linear-gradient(145deg, rgba(255,255,255,.13), rgba(255,255,255,.045)); box-shadow: var(--shadow); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease; }
+    .card::before { content: ""; position: absolute; inset: -45% 30% 55% -20%; border-radius: 50%; background: var(--accent); filter: blur(50px); opacity: .18; pointer-events: none; }
+    .card:hover { transform: translateY(-8px); border-color: rgba(255,255,255,.3); box-shadow: 0 34px 100px rgba(0,0,0,.52); }
+    .card-top { position: relative; display: flex; justify-content: space-between; align-items: start; }
+    .app-icon { width: 66px; height: 66px; display: grid; place-items: center; border-radius: 19px; background: var(--accent); box-shadow: 0 13px 35px color-mix(in srgb, var(--accent) 35%, transparent); }
+    .app-icon svg { width: 34px; height: 34px; }
+    .tag { padding: 7px 10px; border: 1px solid var(--stroke); border-radius: 999px; color: #dce3f5; background: rgba(255,255,255,.07); font-size: 11px; }
+    .card h3 { position: relative; margin: 28px 0 9px; font-size: 28px; letter-spacing: -.055em; }
+    .card .desc { position: relative; min-height: 57px; margin: 0; color: var(--muted); line-height: 1.7; font-size: 14px; }
+    .meta { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin: 25px 0 26px; }
+    .meta span { padding: 7px 9px; border-radius: 9px; color: #ccd4e8; background: rgba(0,0,0,.18); font-size: 11px; }
+    .card-bottom { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .version { color: var(--muted); font-size: 12px; }
+    .download { min-width: 125px; background: var(--accent); color: #09101e; }
+
+    .trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0 75px; }
+    .trust-item { padding: 17px; border: 1px solid var(--stroke); border-radius: 16px; background: rgba(255,255,255,.045); }
+    .trust-item strong { display: block; margin-bottom: 5px; font-size: 14px; }
+    .trust-item span { color: var(--muted); font-size: 12px; }
+    footer { padding: 25px 0 42px; border-top: 1px solid rgba(255,255,255,.09); color: var(--muted); font-size: 12px; }
+    footer .shell { display: flex; justify-content: space-between; gap: 16px; }
+    .admin-link { color: var(--muted); text-decoration: none; border-bottom: 1px dashed rgba(255,255,255,.28); cursor: pointer; }
+    .admin-link:hover { color: var(--text); }
+    .admin-backdrop { position: fixed; inset: 0; z-index: 20; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(1, 3, 10, .72); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+    .admin-backdrop.open { display: flex; }
+    .admin-panel { width: min(920px, 100%); max-height: min(850px, 92vh); overflow: auto; border: 1px solid rgba(255,255,255,.18); border-radius: 24px; background: linear-gradient(145deg, rgba(24,29,51,.96), rgba(9,12,25,.96)); box-shadow: 0 35px 120px rgba(0,0,0,.6); }
+    .admin-head { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 24px; border-bottom: 1px solid rgba(255,255,255,.1); background: rgba(15,19,37,.88); backdrop-filter: blur(18px); }
+    .admin-head h2 { margin: 0; font-size: 22px; letter-spacing: -.04em; }
+    .admin-head p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+    .admin-close { width: 34px; height: 34px; border: 1px solid var(--stroke); border-radius: 10px; background: rgba(255,255,255,.07); color: var(--text); font-size: 20px; cursor: pointer; }
+    .admin-body { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 22px 24px 26px; }
+    .admin-section { padding: 17px; border: 1px solid rgba(255,255,255,.11); border-radius: 16px; background: rgba(255,255,255,.045); }
+    .admin-section.full { grid-column: 1 / -1; }
+    .admin-section h3 { margin: 0 0 13px; font-size: 14px; }
+    .admin-fields { display: grid; gap: 10px; }
+    .admin-field { display: grid; gap: 6px; }
+    .admin-field label { color: #cdd4e8; font-size: 11px; }
+    .admin-field input, .admin-field textarea, .admin-field select { width: 100%; border: 1px solid rgba(255,255,255,.13); border-radius: 9px; outline: none; padding: 9px 10px; color: var(--text); background: rgba(0,0,0,.2); font: inherit; font-size: 12px; }
+    .admin-field textarea { min-height: 62px; resize: vertical; }
+    .admin-field input:focus, .admin-field textarea:focus, .admin-field select:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(109,231,255,.12); }
+    .admin-checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .admin-check { display: flex; align-items: center; gap: 8px; color: #d9dfef; font-size: 12px; }
+    .admin-check input { accent-color: var(--violet); }
+    .admin-actions { display: flex; justify-content: flex-end; gap: 9px; grid-column: 1 / -1; }
+    .admin-note { color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .admin-login { width: min(380px, 100%); padding: 25px; border: 1px solid rgba(255,255,255,.18); border-radius: 20px; background: #11162a; box-shadow: 0 30px 100px rgba(0,0,0,.6); }
+    .admin-login h2 { margin: 0 0 8px; font-size: 20px; }
+    .admin-login p { margin: 0 0 17px; color: var(--muted); font-size: 12px; }
+    .admin-login input { width: 100%; border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 12px; outline: none; color: var(--text); background: rgba(0,0,0,.2); font: inherit; }
+    .admin-login .login-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
+
+    @keyframes drift { from { transform: translate3d(-2%, -2%, 0) scale(1); } to { transform: translate3d(9%, 8%, 0) scale(1.13); } }
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 28px, 560px); }
+      header { padding-top: 18px; } nav { display: none; }
+      .hero { padding: 78px 0 60px; } .hero-actions { flex-direction: column; align-items: stretch; }
+      .products, .trust { grid-template-columns: 1fr; }
+      .card { min-height: 0; } footer .shell { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="shell">
+    <header id="site-header">
+      <a class="brand" id="brand" href="#top" aria-label="Suisungo 软件发布中心">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 17.5 12 4l7 13.5M8 13h8" stroke="#071020" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span id="brandText">Suisungo <span style="opacity:.48">/</span> Software</span>
+      </a>
+      <nav id="site-nav"><a id="navProducts" href="#products">产品</a><a id="navAbout" href="#about">关于</a></nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" id="hero">
+        <div class="eyebrow" id="eyebrow"><i class="pulse" id="pulse"></i> <span id="eyebrowText">独立开发 · 持续更新</span></div>
+        <h1 id="heroTitle"><span id="heroLead">把好用的软件，</span><span id="heroAccent">放在一起。</span></h1>
+        <p id="heroDescription">这里是 Suisungo 的软件发布中心。选择一个工具，下载后立即开始使用。简洁、快速、本地优先。</p>
+        <div class="hero-actions" id="heroActions"><a class="button button-primary" id="heroPrimary" href="#products">浏览全部软件 <span>↓</span></a><a class="button button-secondary" id="heroSecondary" href="#about">了解更多</a></div>
+      </section>
+
+      <section id="products" class="product-section">
+        <div class="section-label" id="sectionLabel"><div><h2 id="productsTitle">精选软件</h2><p id="productsSubtitle">为日常工作和娱乐准备的两款工具</p></div><p id="productsOverline">DOWNLOAD CENTER</p></div>
+        <div class="products" id="product-grid"></div>
+        <div class="trust" id="about">
+          <div class="trust-item"><strong id="trust1Title">本地优先</strong><span id="trust1Body">文件在你的设备上处理，减少不必要的数据上传。</span></div>
+          <div class="trust-item"><strong id="trust2Title">持续更新</strong><span id="trust2Body">功能和体验会根据反馈持续打磨。</span></div>
+          <div class="trust-item"><strong id="trust3Title">独立制作</strong><span id="trust3Body">由 Suisungo 制作，AI 参与部分设计与开发。</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer id="site-footer"><div class="shell"><span id="footerLeft">© <span id="year"></span> Suisungo. All rights reserved.</span><span id="footerRight">PictureGo · SteamCommunity · <a class="admin-link" id="adminEntry" href="#">管理员界面进入</a></span></div></footer>
+
+  <script>
+    /* 管理员入口：底部“管理员界面进入”，密码：Suisungo。 */
+    const STORAGE_KEY = 'suisungo-download-page-settings-v1';
+    const DEFAULT_STATE = {
+      text: {
+        brand: 'Suisungo / Software', eyebrow: '独立开发 · 持续更新', heroLead: '把好用的软件，', heroAccent: '放在一起。',
+        heroDescription: '这里是 Suisungo 的软件发布中心。选择一个工具，下载后立即开始使用。简洁、快速、本地优先。',
+        heroPrimary: '浏览全部软件', heroSecondary: '了解更多', productsTitle: '精选软件', productsSubtitle: '为日常工作和娱乐准备的两款工具', productsOverline: 'DOWNLOAD CENTER',
+        trust1Title: '本地优先', trust1Body: '文件在你的设备上处理，减少不必要的数据上传。', trust2Title: '持续更新', trust2Body: '功能和体验会根据反馈持续打磨。', trust3Title: '独立制作', trust3Body: '由 Suisungo 制作，AI 参与部分设计与开发。',
+        footerLeft: '© {year} Suisungo. All rights reserved.', footerRight: 'PictureGo · SteamCommunity', navProducts: '产品', navAbout: '关于'
+      },
+      colors: { pulse: '#72f6ad' },
+      visibility: { header: true, brand: true, nav: true, hero: true, eyebrow: true, heroActions: true, products: true, product0: true, product1: true, trust: true, footer: true },
+      buttons: {
+        heroPrimary: { url: '#products', target: '_self' }, heroSecondary: { url: '#about', target: '_self' }, navProducts: { url: '#products', target: '_self' }, navAbout: { url: '#about', target: '_self' },
+        download0: { url: 'https://example.com/steamcommunity-download', target: '_blank' }, download1: { url: 'https://example.com/picturego-download', target: '_blank' }
+      },
+      apps: [
+        { name: 'SteamCommunity 游戏加速器', description: '为 Steam 社区、创意工坊与相关页面优化连接体验，让浏览、加载和内容访问更顺滑。', version: 'v1.0.0', platform: 'Windows / macOS', tags: ['游戏工具', '网络优化', '轻量'], accent: 'linear-gradient(135deg, #70e7ff, #3877ff)', icon: '<svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="white" stroke-width="2"/><circle cx="21.5" cy="10.5" r="3.3" stroke="white" stroke-width="2"/><circle cx="10.5" cy="20.6" r="3.3" stroke="white" stroke-width="2"/><path d="m13.5 18.5 5.3-5.3M8.2 18.2l5.2 2.1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>' },
+        { name: 'PictureGo 自制图片转换器', description: '毛玻璃风格的本地图片格式转换工具，支持批量导入、质量调节和常见/专业格式工作流。', version: 'v1.0.0', platform: 'Windows / macOS', tags: ['图片工具', '批量转换', '本地处理'], accent: 'linear-gradient(135deg, #d18cff, #756dff)', icon: '<svg viewBox="0 0 32 32" fill="none"><rect x="5" y="6" width="22" height="20" rx="4" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="white"/><path d="m7 23 6.3-6.1 4.1 3.3 2.8-2.4L26 23" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' }
+      ]
+    };
+
+    const clone = (value) => JSON.parse(JSON.stringify(value));
+    const escapeHTML = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+    const getPath = (object, path) => path.split('.').reduce((current, key) => current?.[key], object);
+    const setPath = (object, path, value) => { const keys = path.split('.'); const last = keys.pop(); const target = keys.reduce((current, key) => current[key] ??= {}, object); target[last] = value; };
+    const loadState = () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if (!saved) return clone(DEFAULT_STATE);
+        const merged = clone(DEFAULT_STATE);
+        Object.assign(merged.text, saved.text || {}); Object.assign(merged.colors, saved.colors || {}); Object.assign(merged.visibility, saved.visibility || {}); Object.assign(merged.buttons, saved.buttons || {});
+        if (Array.isArray(saved.apps)) saved.apps.forEach((app, index) => { if (merged.apps[index]) Object.assign(merged.apps[index], app); });
+        return merged;
+      } catch { return clone(DEFAULT_STATE); }
+    };
+    let state = loadState();
+
+    const setVisible = (id, visible) => { const element = document.getElementById(id); if (element) element.style.display = visible ? '' : 'none'; };
+    const applyButton = (id, config, fallbackText, icon) => { const element = document.getElementById(id); if (!element) return; element.href = config.url; element.target = config.target; element.innerHTML = `${escapeHTML(fallbackText)} <span>${icon}</span>`; };
+    const renderPublic = () => {
+      const t = state.text;
+      document.getElementById('brandText').textContent = t.brand;
+      document.getElementById('eyebrowText').textContent = t.eyebrow;
+      document.getElementById('heroLead').textContent = t.heroLead; document.getElementById('heroAccent').textContent = t.heroAccent;
+      document.getElementById('heroDescription').textContent = t.heroDescription;
+      document.getElementById('productsTitle').textContent = t.productsTitle; document.getElementById('productsSubtitle').textContent = t.productsSubtitle; document.getElementById('productsOverline').textContent = t.productsOverline;
+      document.getElementById('navProducts').textContent = t.navProducts; document.getElementById('navAbout').textContent = t.navAbout;
+      document.getElementById('trust1Title').textContent = t.trust1Title; document.getElementById('trust1Body').textContent = t.trust1Body; document.getElementById('trust2Title').textContent = t.trust2Title; document.getElementById('trust2Body').textContent = t.trust2Body; document.getElementById('trust3Title').textContent = t.trust3Title; document.getElementById('trust3Body').textContent = t.trust3Body;
+      document.getElementById('footerLeft').textContent = t.footerLeft.replace('{year}', new Date().getFullYear()); document.getElementById('footerRight').firstChild.textContent = t.footerRight + ' · ';
+      document.getElementById('pulse').style.background = state.colors.pulse; document.getElementById('pulse').style.boxShadow = `0 0 0 5px ${state.colors.pulse}22, 0 0 16px ${state.colors.pulse}`;
+      applyButton('heroPrimary', state.buttons.heroPrimary, t.heroPrimary, '↓'); applyButton('heroSecondary', state.buttons.heroSecondary, t.heroSecondary, '↗'); applyButton('navProducts', state.buttons.navProducts, t.navProducts, ''); applyButton('navAbout', state.buttons.navAbout, t.navAbout, '');
+      Object.entries(state.visibility).forEach(([key, visible]) => setVisible({ header: 'site-header', brand: 'brand', nav: 'site-nav', hero: 'hero', eyebrow: 'eyebrow', heroActions: 'heroActions', products: 'products', trust: 'about', footer: 'site-footer', product0: 'product-card-0', product1: 'product-card-1' }[key] || key, visible));
+      const grid = document.querySelector('#product-grid');
+      grid.innerHTML = state.apps.map((app, index) => `<article class="card" id="product-card-${index}" style="--accent:${app.accent}"><div class="card-top"><div class="app-icon">${app.icon}</div><span class="tag">${escapeHTML(app.platform)}</span></div><h3>${escapeHTML(app.name)}</h3><p class="desc">${escapeHTML(app.description)}</p><div class="meta">${app.tags.map((tag) => `<span>${escapeHTML(tag)}</span>`).join('')}</div><div class="card-bottom"><span class="version">最新版本 · ${escapeHTML(app.version)}</span><a class="button download" id="download-${index}" href="${escapeHTML(state.buttons[`download${index}`].url)}" target="${state.buttons[`download${index}`].target}" rel="noopener">立即下载 <span>↗</span></a></div></article>`).join('');
+      state.apps.forEach((_, index) => setVisible(`product-card-${index}`, state.visibility[`product${index}`] !== false));
+      const year = document.getElementById('year'); if (year) year.textContent = new Date().getFullYear();
+    };
+
+    const adminRoot = document.createElement('div'); adminRoot.className = 'admin-backdrop'; document.body.appendChild(adminRoot);
+    const closeAdmin = () => { adminRoot.className = 'admin-backdrop'; adminRoot.innerHTML = ''; };
+    const showLogin = () => { adminRoot.className = 'admin-backdrop open'; adminRoot.innerHTML = `<div class="admin-login"><h2>管理员界面</h2><p>请输入管理员密码以编辑发布页内容。</p><input id="adminPassword" type="password" placeholder="管理员密码" autocomplete="current-password"><div class="login-actions"><button class="button button-secondary" id="loginCancel">取消</button><button class="button button-primary" id="loginSubmit">进入管理</button></div></div>`; const input = document.getElementById('adminPassword'); document.getElementById('loginCancel').onclick = closeAdmin; document.getElementById('loginSubmit').onclick = () => { if (input.value === 'Suisungo') showPanel(); else { input.value = ''; input.placeholder = '密码不正确，请重试'; input.focus(); } }; input.onkeydown = (event) => { if (event.key === 'Enter') document.getElementById('loginSubmit').click(); }; input.focus(); };
+    const textFields = [['brand','品牌文字'],['eyebrow','顶部状态文字'],['heroLead','主标题前半段'],['heroAccent','主标题强调段'],['heroDescription','首页介绍'],['heroPrimary','主按钮文字'],['heroSecondary','次按钮文字'],['productsTitle','产品区标题'],['productsSubtitle','产品区副标题'],['productsOverline','产品区英文小标题'],['navProducts','导航“产品”'],['navAbout','导航“关于”'],['trust1Title','信任卡片1标题'],['trust1Body','信任卡片1内容'],['trust2Title','信任卡片2标题'],['trust2Body','信任卡片2内容'],['trust3Title','信任卡片3标题'],['trust3Body','信任卡片3内容'],['footerLeft','页脚左侧文字'],['footerRight','页脚右侧文字']];
+    const field = (label, path, value, type = 'input') => `<div class="admin-field"><label>${label}</label>${type === 'textarea' ? `<textarea data-path="${path}">${escapeHTML(value)}</textarea>` : `<input data-path="${path}" value="${escapeHTML(value)}">`}</div>`;
+    const showPanel = () => {
+      const visibility = [['header','顶部导航整体'],['brand','品牌标识'],['nav','导航链接'],['hero','首屏区域'],['eyebrow','状态徽章'],['heroActions','首屏按钮组'],['products','产品版块'],['product0','SteamCommunity 卡片'],['product1','PictureGo 卡片'],['trust','底部说明卡片'],['footer','页脚']];
+      adminRoot.className = 'admin-backdrop open';
+      adminRoot.innerHTML = `<div class="admin-panel"><div class="admin-head"><div><h2>发布页管理员</h2><p>修改内容、链接与组件可见性，保存后立即生效。</p></div><button class="admin-close" id="adminClose">×</button></div><div class="admin-body"><section class="admin-section full"><h3>页面文字</h3><div class="admin-fields">${textFields.map(([key,label]) => field(label, `text.${key}`, state.text[key], ['heroDescription','trust1Body','trust2Body','trust3Body'].includes(key) ? 'textarea' : 'input')).join('')}</div></section><section class="admin-section"><h3>状态点颜色</h3><div class="admin-field"><label>“独立开发 · 持续更新”左侧小点</label><input type="color" data-color="pulse" value="${state.colors.pulse}"></div><p class="admin-note">建议使用明亮色，例如 #72f6ad、#6de7ff 或 #ffcc66。</p></section><section class="admin-section"><h3>组件显示 / 隐藏</h3><div class="admin-checks">${visibility.map(([key,label]) => `<label class="admin-check"><input type="checkbox" data-visibility="${key}" ${state.visibility[key] !== false ? 'checked' : ''}>${label}</label>`).join('')}</div></section>${state.apps.map((app,index) => `<section class="admin-section"><h3>${index === 0 ? 'SteamCommunity' : 'PictureGo'} 内容</h3><div class="admin-fields">${field('名称', `apps.${index}.name`, app.name)}${field('简介', `apps.${index}.description`, app.description, 'textarea')}${field('版本号', `apps.${index}.version`, app.version)}${field('平台文字', `apps.${index}.platform`, app.platform)}${field('标签（用英文逗号分隔）', `apps.${index}.tags`, app.tags.join(', '))}</div></section>`).join('')}<section class="admin-section full"><h3>按钮链接与打开位置</h3><div class="admin-fields">${['heroPrimary','heroSecondary','navProducts','navAbout','download0','download1'].map((key) => `<div class="admin-field"><label>${key === 'download0' ? 'SteamCommunity 下载按钮' : key === 'download1' ? 'PictureGo 下载按钮' : key}</label><input data-button-url="${key}" value="${escapeHTML(state.buttons[key].url)}"><select data-button-target="${key}"><option value="_blank" ${state.buttons[key].target === '_blank' ? 'selected' : ''}>新标签页打开</option><option value="_self" ${state.buttons[key].target === '_self' ? 'selected' : ''}>当前页面打开</option></select></div>`).join('')}</div></section><div class="admin-actions"><button class="button button-secondary" id="adminReset">恢复默认</button><button class="button button-secondary" id="adminLogout">关闭</button><button class="button button-primary" id="adminSave">保存所有修改</button></div></div></div>`;
+      document.getElementById('adminClose').onclick = closeAdmin; document.getElementById('adminLogout').onclick = closeAdmin;
+      document.getElementById('adminReset').onclick = () => { if (confirm('确定恢复管理员界面的所有默认设置吗？')) { state = clone(DEFAULT_STATE); localStorage.removeItem(STORAGE_KEY); renderPublic(); showPanel(); } };
+      document.getElementById('adminSave').onclick = () => { adminRoot.querySelectorAll('[data-path]').forEach((element) => { let value = element.value; if (element.dataset.path.match(/^apps\.\d+\.tags$/)) value = value.split(',').map((tag) => tag.trim()).filter(Boolean); setPath(state, element.dataset.path, value); }); adminRoot.querySelectorAll('[data-color]').forEach((element) => state.colors[element.dataset.color] = element.value); adminRoot.querySelectorAll('[data-visibility]').forEach((element) => state.visibility[element.dataset.visibility] = element.checked); adminRoot.querySelectorAll('[data-button-url]').forEach((element) => state.buttons[element.dataset.buttonUrl].url = element.value); adminRoot.querySelectorAll('[data-button-target]').forEach((element) => state.buttons[element.dataset.buttonTarget].target = element.value); localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); renderPublic(); showPanel(); };
+    };
+
+    document.getElementById('adminEntry').addEventListener('click', (event) => { event.preventDefault(); showLogin(); });
+    renderPublic();
+  </script>
+</body>
+</html>
